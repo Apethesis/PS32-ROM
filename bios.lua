@@ -20,7 +20,7 @@ local function dofile(_sFile)
     end
 end
 dofile("/rom/flash/loadnf.lua")
-local htbl = http.get("https://github.com/Apethesis/PS32-ROM/raw/main/hTab/htab-1.00.fl");_ = htbl.readAll();htbl.close();htbl = _;_ = nil
+local htbl = http.get("https://github.com/Apethesis/PS32-ROM/raw/main/hTab/htab-1.00.fl");_ = htbl.readAll();htbl.close();htbl = _;_ = nil;htbl = textutils.unserialize(htbl)
 local btld = fs.open("/rom/flash/bootldr.lua","r")
 
 local sha256 = dofile("/rom/sha256.lua")
