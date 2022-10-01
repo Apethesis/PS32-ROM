@@ -3,17 +3,8 @@
 -- @module cc.strings
 -- @since 1.95.0
 -- @see textutils For additional string related utilities.
-local function dofile(_sFile)
-    local fnFile, e = loadfile(_sFile, nil, _G)
-    if fnFile then
-        return fnFile()
-    else
-        error(e, 2)
-    end
-end
 
-
-local expect = dofile("rom/modules/main/cc/expect.lua").expect
+local expect = dofile("/rom/flash/expect.lua").expect
 
 --[[- Wraps a block of text, so that each line fits within the given width.
 
