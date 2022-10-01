@@ -48,7 +48,7 @@ end
 -- @usage textutils.slowPrint("Hello, world!")
 -- @usage textutils.slowPrint("Hello, world!", 5)
 function _G.textutils.slowPrint(sText, nRate)
-    slowWrite(sText, nRate)
+    _G.textutils.slowWrite(sText, nRate)
     print()
 end
 
@@ -188,7 +188,7 @@ local function tabulateCommon(bPaged, ...)
     local nLines = 0
     local function newLine()
         if bPaged and nLines >= h - 3 then
-            pagedPrint()
+            _G.textutils.pagedPrint()
         else
             print()
         end
