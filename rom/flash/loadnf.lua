@@ -1,3 +1,15 @@
+_G.os = _G.os or {}
+function _G.os.pullEventRaw(sFilter)
+    return coroutine.yield(sFilter)
+end
+
+function _G.os.pullEvent(sFilter)
+    local eventData = table.pack(os.pullEventRaw(sFilter))
+    if eventData[1] == "terminate" then
+        error("Terminated", 0)
+    end
+    return table.unpack(eventData, 1, eventData.n)
+end
 function _G.print(...)
     local nLinesPrinted = 0
     local nLimit = select("#", ...)
@@ -16,6 +28,50 @@ function _G.os.shutdown(...)
     nativeShutdown(...)
     while true do
         coroutine.yield()
+    end
+end
+local nativeReboot = _G.os.reboot
+function _G.os.reboot()
+    nativeReboot()
+    while true do
+        coroutine.yield()
+    end
+end
+local type = type
+local nativeload = load
+local nativeloadstring = loadstring
+local nativesetfenv = setfenv
+
+function _G.load(x, name, mode, env)
+    local ok, p1, p2 = pcall(function()
+        if type(x) == "string" then
+            local result, err = nativeloadstring(x, name)
+            if result then
+                if env then
+                    env._ENV = env
+                    nativesetfenv(result, env)
+                end
+                return result
+            else
+                return nil, err
+            end
+        else
+            local result, err = nativeload(x, name)
+            if result then
+                if env then
+                    env._ENV = env
+                    nativesetfenv(result, env)
+                end
+                return result
+            else
+                return nil, err
+            end
+        end
+    end)
+    if ok then
+        return p1, p2
+    else
+        error(p1, 2)
     end
 end
 function _G.loadfile(filename, mode, env)
@@ -177,3 +233,4 @@ if _G.http then
         end
     end
 end
+_G.textutils = dofile("/rom/flash/textutils.lua")

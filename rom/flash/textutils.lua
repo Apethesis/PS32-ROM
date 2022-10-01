@@ -4,10 +4,10 @@
 -- @module textutils
 -- @since 1.2
 
-local expect = dofile("rom/modules/main/cc/expect.lua")
+local expect = dofile("/rom/flash/expect.lua")
 local expect, field = expect.expect, expect.field
-local wrap = dofile("rom/modules/main/cc/strings.lua").wrap
-_G.textutils = {}
+local wrap = dofile("/rom/flash/strings.lua").wrap
+local textutils = {}
 
 --- Slowly writes string text at current cursor position,
 -- character-by-character.
@@ -20,7 +20,7 @@ _G.textutils = {}
 -- @usage textutils.slowWrite("Hello, world!")
 -- @usage textutils.slowWrite("Hello, world!", 5)
 -- @since 1.3
-function _G.textutils.slowWrite(text, rate)
+function textutils.slowWrite(text, rate)
     expect(2, rate, "number", "nil")
     rate = rate or 20
     if rate < 0 then
@@ -47,8 +47,8 @@ end
 -- Defaults to 20.
 -- @usage textutils.slowPrint("Hello, world!")
 -- @usage textutils.slowPrint("Hello, world!", 5)
-function _G.textutils.slowPrint(sText, nRate)
-    _G.textutils.slowWrite(sText, nRate)
+function textutils.slowPrint(sText, nRate)
+    textutils.slowWrite(sText, nRate)
     print()
 end
 
@@ -64,7 +64,7 @@ end
 -- @usage Print the local time as a 24-hour clock.
 --
 --     textutils.formatTime(os.time("local"), true)
-function _G.textutils.formatTime(nTime, bTwentyFourHour)
+function textutils.formatTime(nTime, bTwentyFourHour)
     expect(1, nTime, "number")
     expect(2, bTwentyFourHour, "boolean", "nil")
     local sTOD = nil
@@ -134,7 +134,7 @@ bottom of the terminal is reached.
     local width, height = term.getCursorPos()
     textutils.pagedPrint(message, height - 2)
 ]]
-function _G.textutils.pagedPrint(text, free_lines)
+function textutils.pagedPrint(text, free_lines)
     expect(2, free_lines, "number", "nil")
     -- Setup a redirector
     local oldTerm = term.current()
@@ -188,7 +188,7 @@ local function tabulateCommon(bPaged, ...)
     local nLines = 0
     local function newLine()
         if bPaged and nLines >= h - 3 then
-            _G.textutils.pagedPrint()
+            textutils.pagedPrint()
         else
             print()
         end
@@ -240,7 +240,7 @@ When encountering a number, this sets the text color of the subsequent rows to i
       colors.lightBlue, { "A", "B", "C" }
     )
 ]]
-function _G.textutils.tabulate(...)
+function textutils.tabulate(...)
     return tabulateCommon(false, ...)
 end
 
@@ -262,7 +262,7 @@ input should the whole output not fit on the display.
 
     textutils.tabulate(colors.orange, {"Column", "Value"}, colors.lightBlue, table.unpack(rows))
 ]]
-function _G.textutils.pagedTabulate(...)
+function textutils.pagedTabulate(...)
     return tabulateCommon(true, ...)
 end
 
@@ -736,7 +736,7 @@ suitable for pretty printing.
 
     print(textutils.serialize(tbl, { compact = true }))
 ]]
-function _G.textutils.serialize(t, opts)
+function textutils.serialize(t, opts)
     local tTracking = {}
     expect(2, opts, "table", "nil")
 
@@ -749,7 +749,7 @@ function _G.textutils.serialize(t, opts)
     return serialize_impl(t, tTracking, "", opts)
 end
 
-_G.textutils.serialise = _G.textutils.serialize -- GB version
+textutils.serialise = textutils.serialize -- GB version
 
 --- Converts a serialised string back into a reassembled Lua object.
 --
@@ -759,7 +759,7 @@ _G.textutils.serialise = _G.textutils.serialize -- GB version
 -- @return[1] The deserialised object
 -- @treturn[2] nil If the object could not be deserialised.
 -- @since 1.3
-function _G.textutils.unserialize(s)
+function textutils.unserialize(s)
     expect(1, s, "string")
     local func = load("return " .. s, "unserialize", "t", {})
     if func then
@@ -771,7 +771,7 @@ function _G.textutils.unserialize(s)
     return nil
 end
 
-_G.textutils.unserialise = _G.textutils.unserialize -- GB version
+textutils.unserialise = textutils.unserialize -- GB version
 
 --- Returns a JSON representation of the given data.
 --
@@ -792,17 +792,17 @@ _G.textutils.unserialise = _G.textutils.unserialize -- GB version
 -- times.
 -- @usage textutils.serializeJSON({ values = { 1, "2", true } })
 -- @since 1.7
-function _G.textutils.serializeJSON(t, bNBTStyle)
+function textutils.serializeJSON(t, bNBTStyle)
     expect(1, t, "table", "string", "number", "boolean")
     expect(2, bNBTStyle, "boolean", "nil")
     local tTracking = {}
     return serializeJSONImpl(t, tTracking, bNBTStyle or false)
 end
 
-_G.textutils.serialiseJSON = _G.textutils.serializeJSON -- GB version
+textutils.serialiseJSON = textutils.serializeJSON -- GB version
 
-_G.textutils.unserializeJSON = unserialise_json
-_G.textutils.unserialiseJSON = unserialise_json
+textutils.unserializeJSON = unserialise_json
+textutils.unserialiseJSON = unserialise_json
 
 --- Replaces certain characters in a string to make it safe for use in URLs or POST data.
 --
@@ -810,7 +810,7 @@ _G.textutils.unserialiseJSON = unserialise_json
 -- @treturn string The encoded string.
 -- @usage print("https://example.com/?view=" .. textutils.urlEncode("some text&things"))
 -- @since 1.31
-function _G.textutils.urlEncode(str)
+function textutils.urlEncode(str)
     expect(1, str, "string")
     if str then
         str = string.gsub(str, "\n", "\r\n")
@@ -850,7 +850,7 @@ local tEmpty = {}
 -- @see _G.read
 -- @usage textutils.complete( "pa", _ENV )
 -- @since 1.74
-function _G.textutils.complete(sSearchText, tSearchTable)
+function textutils.complete(sSearchText, tSearchTable)
     expect(1, sSearchText, "string")
     expect(2, tSearchTable, "table", "nil")
 
@@ -925,3 +925,4 @@ function _G.textutils.complete(sSearchText, tSearchTable)
     table.sort(tResults)
     return tResults
 end
+return textutils

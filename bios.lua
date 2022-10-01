@@ -1,3 +1,39 @@
+local type = type
+local nativeload = load
+local nativeloadstring = loadstring
+local nativesetfenv = setfenv
+local function load(x, name, mode, env)
+    local ok, p1, p2 = pcall(function()
+        if type(x) == "string" then
+            local result, err = nativeloadstring(x, name)
+            if result then
+                if env then
+                    env._ENV = env
+                    nativesetfenv(result, env)
+                end
+                return result
+            else
+                return nil, err
+            end
+        else
+            local result, err = nativeload(x, name)
+            if result then
+                if env then
+                    env._ENV = env
+                    nativesetfenv(result, env)
+                end
+                return result
+            else
+                return nil, err
+            end
+        end
+    end)
+    if ok then
+        return p1, p2
+    else
+        error(p1, 2)
+    end
+end
 local function loadfile(filename, mode, env)
     -- Support the previous `loadfile(filename, env)` form instead.
     if type(mode) == "table" and env == nil then
@@ -24,7 +60,6 @@ local htbl = http.get("https://github.com/Apethesis/PS32-ROM/raw/main/hTab/htab-
 local btld = fs.open("/rom/flash/bootldr.lua","r")
 
 local sha256 = dofile("/rom/sha256.lua")
-dofile("/rom/flash/textutils.lua")
 if not tostring(sha256.digest(btld.readAll())) == htbl.bootldr then -- If the hash isn't the same it basically bricks itself.
     print("Bootloader has been corrupted or modified, this device has become unusable.")
     btld.close()

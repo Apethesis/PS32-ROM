@@ -2,15 +2,6 @@ term.clear()
 local os = {}
 local w, h = term.getSize()
 local i = 1
-local function dofile(_sFile)
-    local fnFile, e = loadfile(_sFile, nil, _G)
-    if fnFile then
-        return fnFile()
-    else
-        error(e, 2)
-    end
-end
-
 
 local colors = dofile("/rom/coreos/colors.lua")
 
@@ -64,14 +55,20 @@ local function options(o)
             term.write(o[t])
         end
         local event, code = os.pullEvent("key")
-        if code == 200 and i > 1 then i = i - 1 end
-        if code == 208 and i < 4 then i = i + 1 end
-        if code == 45 then break end
+        if code == 200 and i > 1 then
+            i = i - 1
+        elseif code == 208 and i < 5 then
+            i = i + 1
+        elseif code == 45 then
+            break
+        elseif code == 28 and i == 1 then
+            os.reboot()
+        end
     end
     return i
 end
 
 while true do
-    local option = {"1. Restart System", "2. Restore Default Settings", "3. Restore PS3 System", "4. System Update"}
+    local option = {"1. Restart System", "2. Restore Default Settings", "3. Restore PS3 System", "4. System Update", "5. Coinflip"}
     local i = options(option)
 end
