@@ -2,6 +2,15 @@ term.clear()
 local os = {}
 local w, h = term.getSize()
 local i = 1
+local function dofile(_sFile)
+    local fnFile, e = loadfile(_sFile, nil, _G)
+    if fnFile then
+        return fnFile()
+    else
+        error(e, 2)
+    end
+end
+
 
 local colors = dofile("/rom/coreos/colors.lua")
 

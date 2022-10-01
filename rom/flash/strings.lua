@@ -3,6 +3,15 @@
 -- @module cc.strings
 -- @since 1.95.0
 -- @see textutils For additional string related utilities.
+local function dofile(_sFile)
+    local fnFile, e = loadfile(_sFile, nil, _G)
+    if fnFile then
+        return fnFile()
+    else
+        error(e, 2)
+    end
+end
+
 
 local expect = dofile("rom/modules/main/cc/expect.lua").expect
 
