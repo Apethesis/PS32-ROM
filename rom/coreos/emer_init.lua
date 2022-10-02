@@ -5,18 +5,6 @@ local i = 1
 
 local colors = dofile("/rom/coreos/colors.lua")
 
-function os.pullEventRaw(sFilter)
-    return coroutine.yield(sFilter)
-end
-
-function os.pullEvent(sFilter)
-    local eventData = table.pack(os.pullEventRaw(sFilter))
-    if eventData[1] == "terminate" then
-        error("Terminated", 0)
-    end
-    return table.unpack(eventData, 1, eventData.n)
-end
-
 local function options(o)
     while true do
         local boxW = #o[1]
@@ -54,7 +42,7 @@ local function options(o)
             end
             term.write(o[t])
         end
-        local event, code = os.pullEvent("key")
+        local event, code = _G.os.pullEvent("key")
         if code == 200 and i > 1 then
             i = i - 1
         elseif code == 208 and i < 5 then
@@ -62,13 +50,13 @@ local function options(o)
         elseif code == 45 then
             break
         elseif code == 28 and i == 1 then
-            os.reboot()
+            _G.os.reboot()
         end
     end
     return i
 end
 
 while true do
-    local option = {"1. Restart System", "2. Restore Default Settings", "3. Restore PS3 System", "4. System Update", "5. Coinflip"}
+    local option = {"1. Restart System", "2. Restore Default Settings", "3. Restore PS3 System", "4. System Update"}
     local i = options(option)
 end
