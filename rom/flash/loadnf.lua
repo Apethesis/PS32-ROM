@@ -233,4 +233,6 @@ if _G.http then
         end
     end
 end
-_G.textutils = dofile("/rom/flash/textutils.lua")
+_G.textutils = dofile("/rom/flash/apis/textutils.lua")
+_G.colors = dofile("rom/flash/apis/colors.lua")
+_G.keys = dofile("rom/flash/apis/keys.lua")

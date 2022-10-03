@@ -3,8 +3,6 @@ local os = {}
 local w, h = term.getSize()
 local i = 1
 
-local colors = dofile("/rom/coreos/colors.lua")
-
 local function options(o)
     while true do
         local boxW = #o[1]
@@ -45,7 +43,7 @@ local function options(o)
         local event, code = _G.os.pullEvent("key")
         if code == 200 and i > 1 then
             i = i - 1
-        elseif code == 208 and i < 5 then
+        elseif code == 208 and i < 4 then
             i = i + 1
         elseif code == 45 then
             break
