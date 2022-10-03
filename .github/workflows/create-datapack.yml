@@ -1,0 +1,28 @@
+name: Create Datapack
+on: [push]
+
+
+jobs:
+  createjars:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get repo files
+        uses: actions/checkout@v3
+
+      - name: Create directories
+        run: |
+         mkdir $GITHUB_WORKSPACE/datapack/data
+         mkdir $GITHUB_WORKSPACE/datapack/data/computercraft
+         mkdir $GITHUB_WORKSPACE/datapack/data/computercraft/lua
+
+      - name: Add CustROM to datapack
+        run: |
+          cp $GITHUB_WORKSPACE/bios.lua $GITHUB_WORKSPACE/datapack/data/computercraft/lua/bios.lua
+          cp -r $GITHUB_WORKSPACE/rom $GITHUB_WORKSPACE/datapack/data/computercraft/lua/rom
+
+              
+      - name: Upload zip file       
+        uses: actions/upload-artifact@v3
+        with:
+          name: datapack
+          path: datapack/*
